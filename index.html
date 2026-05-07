@@ -498,63 +498,104 @@
         const successMsg = mission.successMessage || "✅ Правильно! Продолжай!";
         showSuccessScreen(next, successMsg);
     }
-
     function showSuccessScreen(nextMission, successMessage) {
-        gameActive = false;
-        if (nextMission === null || nextMission > gameData.missionsList.length) { showFinalStats(); return; }
-        document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text victory" style="font-size:18px;">${successMessage}</div>
-            <div style="margin-top:15px; padding-top:10px; border-top:1px solid #ffd96640;">
-                <div class="story-label">📊 ТЕКУЩИЕ ХАРАКТЕРИСТИКИ:</div>
-                <div style="font-size:12px; display:grid; grid-template-columns:1fr 1fr; gap:5px;">
-                    <span style="color:#ffd966;">🎯 Влияние на Горбачёва:</span><span style="color:#d7c9b5;">${playerStats.gorbachevInfluence}</span>
-                    <span style="color:#ffd966;">🗳️ Доверие демократов:</span><span style="color:#d7c9b5;">${playerStats.democratsTrust}</span>
-                    <span style="color:#ffd966;">⚙️ Доверие консерваторов:</span><span style="color:#d7c9b5;">${playerStats.conservativesTrust}</span>
-                    <span style="color:#ffd966;">🛡️ Политическа безопасность:</span><span style="color:#d7c9b5;">${playerStats.politicalSurvival}</span>
-                    <span style="color:#ffd966;">⚖️ Совесть:</span><span style="color:#d7c9b5;">${playerStats.conscience}</span>
-                    <span style="color:#ffd966;">📦 Доступ к ресурсам:</span><span style="color:#d7c9b5;">${playerStats.partyResources}</span>
+    gameActive = false;
+    if (nextMission === null || nextMission > gameData.missionsList.length) {
+        showFinalStats();
+        return;
+    }
+
+    const changes = gameData.missionsList[gameData.currentMission - 1].statsChange || {};
+
+    function formatChange(value) {
+        if (value === undefined || value === 0) return '';
+        const symbol = value > 0 ? '↑' : '↓';
+        const color = value > 0 ? '#90EE90' : '#ff8888';
+        return `<span style="color: ${color};"> ${symbol} ${Math.abs(value)}</span>`;
+    }
+
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <div class="mission-text victory" style="font-size:18px; white-space:pre-wrap; text-align: left;">
+                ${successMessage}
+            </div>
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ffd96640;">
+                <div class="story-label" style="font-size: 12px;">📊 ИЗМЕНЕНИЯ ХАРАКТЕРИСТИК:</div>
+                <div style="font-size: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                    <div style="color: #d7c9b5;">Влияние на Горбачёва:</div>
+                    <div style="color: #d7c9b5;">${playerStats.gorbachevInfluence} ${formatChange(changes.gorbachevInfluence)}</div>
+                    <div style="color: #d7c9b5;">Доверие демократов:</div>
+                    <div style="color: #d7c9b5;">${playerStats.democratsTrust} ${formatChange(changes.democratsTrust)}</div>
+                    <div style="color: #d7c9b5;">Доверие консерваторов:</div>
+                    <div style="color: #d7c9b5;">${playerStats.conservativesTrust} ${formatChange(changes.conservativesTrust)}</div>
+                    <div style="color: #d7c9b5;">Политическая безопасность:</div>
+                    <div style="color: #d7c9b5;">${playerStats.politicalSurvival} ${formatChange(changes.politicalSurvival)}</div>
+                    <div style="color: #d7c9b5;">Совесть:</div>
+                    <div style="color: #d7c9b5;">${playerStats.conscience} ${formatChange(changes.conscience)}</div>
+                    <div style="color: #d7c9b5;">Доступ к ресурсам:</div>
+                    <div style="color: #d7c9b5;">${playerStats.partyResources} ${formatChange(changes.partyResources)}</div>
                 </div>
             </div>
-            <div class="button-group"><button class="action-btn start-btn" id="continueBtn">▶ ПРОДОЛЖИТЬ ПРИНИМАТЬ РЕШЕНИЯ</button></div>
-        </div>`;
-        document.getElementById("continueBtn")?.addEventListener("click", () => { gameData.currentMission = nextMission; gameActive = true; render(); });
-    }
+            <div class="button-group">
+                <button class="action-btn start-btn" id="continueBtn">▶ ПРОДОЛЖИТЬ ПРИНИМАТЬ РЕШЕНИЯ</button>
+            </div>
+        </div>
+    `;
 
-    function showFinalStats() {
-        gameActive = false;
-        let status = "";
-        if (playerStats.conscience >= 80) status = "🏆 ГЕРОЙ ПЕРЕСТРОЙКИ";
-        else if (playerStats.conscience >= 60) status = "⭐ РЕФОРМАТОР";
-        else if (playerStats.conscience >= 40) status = "🟡 КОМПРОМИССНЫЙ ПОЛИТИК";
-        else status = "💀 ПРЕДАТЕЛЬ ИДЕАЛОВ";
-        document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text victory" style="font-size:20px; text-align:center;">🎉 ИГРА ПРОЙДЕНА 🎉</div>
-            <div style="font-size:14px; line-height:1.8; color: #d7c9b5;">
-    🎯 Влияние на Горбачёва: <span style="color: #d7c9b5;">${playerStats.gorbachevInfluence}</span><br>
-    🗳️ Доверие демократов: <span style="color: #d7c9b5;">${playerStats.democratsTrust}</span><br>
-    ⚙️ Доверие консерваторов: <span style="color: #d7c9b5;">${playerStats.conservativesTrust}</span><br>
-    🛡️ Политическа безопасность: <span style="color: #d7c9b5;">${playerStats.politicalSurvival}</span><br>
-    ⚖️ Совесть: <span style="color: #d7c9b5;">${playerStats.conscience}</span><br>
-    📦 Доступ к ресурсам: <span style="color: #d7c9b5;">${playerStats.partyResources}</span><br>
-    🕊️ Уважение правозащитников: <span style="color: #d7c9b5;">${playerStats.humanRightsRespect || 0}</span>
-</div></div>
-            <div class="story-section"><div class="story-text" style="font-style:italic;">${gameData.victoryMessage}</div></div>
-            <div class="button-group"><button class="action-btn restart-btn-small" id="restartBtn">🔄 СЫГРАТЬ ЗАНОВО</button><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div>
-        </div>`;
-        document.getElementById("restartBtn")?.addEventListener("click", () => { location.reload(); });
-        document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
-    }
+    document.getElementById("continueBtn")?.addEventListener("click", () => {
+        gameData.currentMission = nextMission;
+        gameActive = true;
+        render();
+    });
+}
 
-    function showFinalMessage(message, isVictory) {
-        gameActive = false;
-        const extraClass = isVictory ? "victory" : "game-over";
-        if (isVictory) {
-            document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text ${extraClass}">${message}</div><div class="button-group"><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div></div>`;
-            document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
-        } else {
-            document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text ${extraClass}">${message}</div><div class="button-group"><button class="action-btn restart-btn-small" id="retryBtn">🔁 НАЗАД К ВОПРОСУ</button><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div></div>`;
-            document.getElementById("retryBtn")?.addEventListener("click", () => { gameActive = true; render(); });
-            document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
-        }
-    }
+  function showFinalStats() {
+    gameActive = false;
+    
+    let status = "";
+    if (playerStats.conscience >= 80) status = "🏆 ГЕРОЙ ПЕРЕСТРОЙКИ";
+    else if (playerStats.conscience >= 60) status = "⭐ РЕФОРМАТОР";
+    else if (playerStats.conscience >= 40) status = "🟡 КОМПРОМИССНЫЙ ПОЛИТИК";
+    else status = "💀 ПРЕДАТЕЛЬ ИДЕАЛОВ";
+    
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <div style="text-align:center; margin:15px 0; font-size:22px; color:#d7c9b5;">${status}</div>
+            
+            <div class="story-section" style="background: rgba(255, 255, 255, 0.08);">
+                <div class="story-label" style="color: #d7c9b5;">📊 ИТОГОВАЯ СТАТИСТИКА</div>
+                <div style="font-size:14px; line-height:1.8; color: #d7c9b5;">
+                    🎯 Влияние на Горбачёва: ${playerStats.gorbachevInfluence}<br>
+                    🗳️ Доверие демократов: ${playerStats.democratsTrust}<br>
+                    ⚙️ Доверие консерваторов: ${playerStats.conservativesTrust}<br>
+                    🛡️ Политическая безопасность: ${playerStats.politicalSurvival}<br>
+                    ⚖️ Совесть: ${playerStats.conscience}<br>
+                    📦 Доступ к ресурсам: ${playerStats.partyResources}<br>
+                    🕊️ Уважение правозащитников: ${playerStats.humanRightsRespect || 0}
+                </div>
+            </div>
+            
+            <div class="story-section" style="background: #231717; border: 1px solid #ffd96640; border-radius: 20px; padding: 16px; margin-bottom: 20px;">
+                <div class="story-text" style="font-style:italic; color: #d7c9b5;">${gameData.victoryMessage}</div>
+            </div>
+            
+            <div class="button-group">
+                <button class="action-btn restart-btn-small" id="restartBtn">🔄 СЫГРАТЬ ЗАНОВО</button>
+                <button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("restartBtn")?.addEventListener("click", () => {
+        location.reload();
+    });
+    document.getElementById("menuBtn")?.addEventListener("click", () => {
+        currentState = "character_select";
+        selectedCharacterId = null;
+        gameActive = true;
+        render();
+    });
+}
 
     function attachCharacterEvents() {
         document.querySelectorAll(".character-card").forEach(card => {
