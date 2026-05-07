@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>СССР: Пройди путь реформатора</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            box-shadow: none !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, #d7c9b5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Times New Roman', Times, serif, sans-serif;
+            padding: 16px;
+        }
+
+        .game-container {
+            max-width: 550px;
+            width: 100%;
+            margin: auto;
+        }
+
+        .card {
+            background: #231717;
+            border-radius: 48px;
+            padding: 32px 24px;
+            box-shadow: 0 25px 40px #231717, inset 0 1px 0 rgba(255,215,0,0.2);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffd966;
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .sub {
+            text-align: center;
+            color: #b0a07c;
+            font-size: 20px;
+            margin-bottom: 32px;
+            border-bottom: 1px dashed #ffd96660;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .character-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .character-card {
+            border-radius: 28px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 2px solid #d7c9b5;
+            position: relative;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .character-card.selected {
+            border-color: #d7c9b5;
+            background: #231717;
+        }
+
+        .character-name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffe0b5;
+        }
+
+        .character-years {
+            font-size: 14px;
+            color: #b0a07c;
+            margin-top: 4px;
+        }
+
+        .bio {
+            background: #d7c9b5;
+            border-radius: 24px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #231717;
+            position: relative;
+        }
+
+        .close-bio-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #ec8282;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 4px 8px;
+        }
+
+        .close-bio-btn:active {
+            color: #ff4444;
+            transform: scale(0.9);
+        }
+
+        .start-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4a6a3c, #2d4a2a);
+            border: none;
+            padding: 18px;
+            border-radius: 60px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 6px 0 #1e3a1e;
+            margin-top: 20px;
+        }
+
+        .start-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1e3a1e;
+        }
+
+        .start-btn.disabled {
+            opacity: 0.5;
+            transform: none;
+            pointer-events: none;
+            filter: grayscale(0.2);
+        }
+
+        .restart-btn-small {
+            background: #3a3a5a;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            color: #b0a07c;
+            cursor: pointer;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .restart-btn-small:active {
+            background: #231717;
+        }
+
+        .story-image {
+            background: #231717;
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            border: 1px solid #ffd96640;
+        }
+
+        .story-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .story-label {
+            color: #ffd966;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .story-text {
+            color: #f0e6d0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .mission-title {
+            text-align: center;
+            color: #ffd966;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .mission-text {
+            background: #231717;
+            padding: 24px 20px;
+            border-radius: 32px;
+            color: #f0e6d0;
+            font-size: 18px;
+            line-height: 1.4;
+            margin-bottom: 28px;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #4e353a, #2e1e22);
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffe0b5;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #1a0f12;
+        }
+
+        .action-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1a0f12;
+        }
+
+        .game-over {
+            color: #ffaaaa;
+            border-left: 4px solid #ff4444;
+            background: #3a1a1a;
+        }
+
+        .victory {
+            color: #c3ffb2;
+            border-left: 4px solid #6fbf4c;
+            background: #1e3a1e;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #8a6e4e;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container" id="app"></div>
+
+<script>
+    const CHARACTERS = {
+        yakovlev: {
+            id: "yakovlev",
+            name: "Александр Николаевич Яковлев",
+            years: "1923 — 2005",
+            shortBio: "Советский и российский политик, ключевой идеолог горбачевской «Перестройки» и «Гласности». Член Политбюро ЦК КПСС, активный сторонник демократических реформ, либерализации экономики и идеологии СССР, а также один из инициаторов переоценки сталинских репрессий.",
+            bioDetails: {
+                born: "2 декабря 1923 года, деревня Королёво, Ярославская губерния, РСФСР, СССР",
+                politicalPath: "В 1941 году ушёл на фронт добровольцем, прошёл всю войну. После войны окончил Ярославский пединститут, затем Академию общественных наук при ЦК КПСС. Был направлен на стажировку в США, где понял необходимость реформ. Вернувшись, стал ближайшим соратником Горбачёва и главным идеологом Перестройки."
+            },
+            missions: [
+                {
+                    text: "«Цена первой правды»\n\n1985 год. Кремль.\n\nГорбачёв назначает тебя секретарём ЦК по идеологии и приказывает начать с правды о сталинских репрессиях. Ты получаешь доступ к секретным архивам: расстрельные списки, протоколы троек, письма из лагерей. Достаточно подписи — и правда уйдёт в печать",
+                    correct: "Опубликовать всё, открыть гласность. Признать вслух, что репрессии были системным преступлением. Это расколет партию и страну, но даст шанс на очищение. Народ на твоей стороне, но консерваторы объявят войну.",
+                    wrong: "Спрятать архивы. Сохранить веру в партию. Навсегда оставить репрессии безнаказанными. Стабильность любой ценой — но ложь продолжит душить страну ещё десятилетия. Ты сохранишь пост, но проиграешь совесть.",
+                    wrong2: "Сжечь архивы. Никто не узнает правды.Уничтожить доказательства, чтобы замести следы раз и навсегда. Ни скандалов, ни риска. Только пустота. Самый трусливый выбор — тебя возненавидят и демократы, и консерваторы, и собственное отражение.",
+                    correctNext: 2,
+                    failMessage1: "❌ Эх, трусость... \n\n Ты спрятал архивы. Всё из-за тебя оборвалось. Перестройка не началась. Старая ложь продолжает душить страну. Ты сохранил пост, но проиграл совесть. Никто тебя не уважает.",
+                    failMessage2: "❌ Враг народа!\n\n Ты сжёг архивы! \n\n Ты уничтожил память о миллионах жертв. Когда это вскрылось, тебя ненавидят все — и коммунисты, и демократы. Ты хуже палача. Враг народа, и точка.",
+                    successMessage: "Молодец! \n\n Ты опубликовал архивы! Перестройка идёт вверх. Народ на твоей стороне. Консерваторы в бешенстве, но правда вышла наружу. Ты — герой гласности.",
+                    statsChange: {
+                        democratsTrust: 10,
+                        conservativesTrust: -5,
+                        gorbachevInfluence: 5,
+                        partyResources: -10,
+                        conscience: 5
+                    }
+                },
+                {
+                    text: "Партийная конференция.\n\n1988 год. Москва, канун XIX партийной конференции.\n\nТы готовишь доклад о сталинизме и репрессиях. Консерваторы требуют убрать самые острые формулировки и запретить телетрансляцию, чтобы правда не ушла в народ. Горбачёв колеблется, ему нужен компромисс. От твоего решения зависит, услышит ли страна правду из первых уст.",
+                    wrong: "Смягчить доклад, убрав имена и конкретику, согласиться на закрытый режим. Сохранить единство партии и свой пост. Но предать миллионы, десятилетиями ждавших правды.",
+                    wrong2: "Прочитать доклад полностью, но без телевидения — только для делегатов. Партийная элита узнает правду, но народ останется в неведении. Меньше риска, но и эффект гораздо слабее.",
+                    correct: "Прочитать доклад полностью и настоять на прямой телетрансляции. Вся страна услышит правду. Консерваторы придут в ярость, но гласность станет необратимой.",
+                    correctNext: 3,
+                    failMessage1: "❌ Предательство.\n\nТы смягчил доклад и убрал имена. Партия празднует победу лжи. Ты предал тех, кто ждал правды десятилетиями. Твоё имя станет синонимом трусости. Перестройка умерла, не родившись.",
+                    failMessage2: "🟡 Конец реформам.\n\n Ты трусливо запретил телевидение. Народ не узнал правды. Делегаты разъехались, и всё осталось как прежде. Реформы забуксовали.\n Ты мог, но струсил. \nПозор.",
+                    successMessage: "Молодец! \n\n Ты настоял на телетрансляции! Вся страна услышала правду. Гласность стала необратимой. Консерваторы в ярости, но ты сделал историю. Перестройка набирает скорость!",
+                    statsChange: {
+                        democratsTrust: 15,
+                        conservativesTrust: -10,
+                        gorbachevInfluence: 0,
+                        partyResources: -5,
+                        conscience: 5
+                    }
+                },
+                {
+                    text: "Прибалтика. Кровь или независимость.\n\n1988 год. Москва, Вильнюс.\n\nПрибалтийские республики одна за другой объявляют о выходе из СССР. В Кремле военные и консерваторы готовят силовой план: ввод войск в Литву, штурм телебашни. Ты узнаёшь об этом за несколько дней. Горбачёв формально не в курсе, но и не препятствует.",
+                    correct: "Публично выступить против применения силы, а после штурма выйти из ЦК. Потеряешь власть и пост, но обретёшь репутацию человека принципов. Народ и демократы увидят в тебе совесть перестройки.",
+                    wrong: "Втайне позвонить военным и попытаться отменить штурм, не портя отношений с Горбачёвым. Можешь спасти жизни, но если не выйдет — останешься в системе и разделишь вину. Никто не узнает о твоей попытке.",
+                    wrong2: "Поддержать силовое решение, чтобы сохранить влияние в партии. Консерваторы примут тебя за своего, но кровь ляжет и на твои руки. После победы демократов тебя уничтожат политически.",
+                    correctNext: 4,
+                    failMessage1: "🟡 Совесть дороже! \n\n Ты выступил против силы и вышел из ЦК. Это был смелый удар. Демократы рукоплещут. Ты потерял власть, но обрёл честь.",
+                    failMessage2: "❌ Ты поддержал силовиков. Кровь на твоих руках. Демократы тебя уничтожили. КОНЕЦ ИГРЫ",
+                    successMessage: "Молодец! Ты публично выступил против силы. Ты потерял власть, но обрёл честь. Демократы рукоплещут. Твоё имя — символ принципиальности!",
+                    statsChange: {
+                        democratsTrust: 10,
+                        conservativesTrust: -15,
+                        gorbachevInfluence: -15,
+                        partyResources: -20,
+                        politicalSurvival: -10,
+                        conscience: 0
+                    }
+                },
+                {
+                    text: "Августовский путч. Чья сторона?\n\n19–21 августа 1991 года. Москва.\n\nТанки входят в Москву. ГКЧП объявляет чрезвычайное положение, Горбачёв изолирован в Форосе. Ельцин призывает к сопротивлению и собирает защитников у Белого дома. Ты — бывший член Политбюро, вышедший из ЦК, но сохранивший связи. Улицы перекрыты.",
+                    correct: "Ехать в Белый дом и встать рядом с Ельциным. Риск ареста, но ты станешь героем демократов.",
+                    wrong: "Остаться дома и обзванивать военных, уговаривая их не стрелять. Никто не увидит твоей борьбы, но, возможно, именно ты спасешь десятки жизней.",
+                    wrong2: "Поддержать ГКЧП ради сохранения порядка. Если путч победит — сохранишь влияние. Если проиграет — конец карьере и репутации.",
+                    correctNext: 5,
+                    failMessage1: "🟡 Ни с чем. Ты поехал к Ельцину, но после путча остался ни с кем.",
+                    failMessage2: "❌ Ты поддержал ГКЧП. Путч проиграл. КОНЕЦ ИГРЫ",
+                    successMessage: "Молодец! Ты остался дома и обзванивал военных. Штурма удалось избежать.",
+                    statsChange: {
+                        democratsTrust: -5,
+                        conservativesTrust: 0,
+                        gorbachevInfluence: -15,
+                        politicalSurvival: 5,
+                        partyResources: -5,
+                        conscience: 0
+                    }
+                },
+                {
+                    text: "Беловежье. Последний акт\n\nДекабрь 1991 года. Москва, Беловежская пуща.\n\nТы узнаёшь, что Ельцин, Кравчук и Шушкевич тайно встречаются в Беловежской пуще, чтобы подписать соглашение о ликвидации СССР. Горбачёв ещё не в курсе. Союз уже не спасти, но у тебя есть возможность попытаться повлиять на содержание документа.",
+                    wrong: "Связаться с Горбачёвым и попытаться убедить его наложить вето или созвать экстренный съезд. Благородно, но почти безнадёжно.",
+                    correct: "Позвонить Ельцину и потребовать включить в соглашение пункты о двойном гражданстве и правах меньшинств, а затем написать открытое письмо в газету.",
+                    wrong2: "Принять развал как неизбежный и сосредоточиться на подготовке закона о реабилитации репрессированных народов.",
+                    correctNext: null,
+                    failMessage1: "🟡 Старый верный пёс... Ты побежал к Горбачёву, всё зря.",
+                    failMessage2: "🟡 Циник. Ты забросил всё и сел писать закон.",
+                    successMessage: "Голос разума! Ты звонил Ельцину, требовал гарантий. Правозащитники помнят тебя.",
+                    statsChange: {
+                        democratsTrust: -15,
+                        conservativesTrust: 0,
+                        gorbachevInfluence: -10,
+                        politicalSurvival: -10,
+                        partyResources: -10,
+                        conscience: 0,
+                        humanRightsRespect: 25
+                    }
+                }
+            ],
+            victoryText: "🎉 Ты прошёл путь реформатора до конца."
+        }
+    };
+
+    let currentState = "character_select";
+    let selectedCharacterId = null;
+    let gameData = {
+        currentMission: 1,
+        missionsList: [],
+        victoryMessage: "",
+        characterBio: null
+    };
+    let gameActive = true;
+    
+    let playerStats = {
+        gorbachevInfluence: 85,
+        democratsTrust: 50,
+        conservativesTrust: 20,
+        politicalSurvival: 70,
+        conscience: 90,
+        partyResources: 70,
+        humanRightsRespect: 0
+    };
+
+    function render() {
+        const app = document.getElementById("app");
+        if (!app) return;
+        if (currentState === "character_select") renderCharacterScreen();
+        else if (currentState === "story_screen") renderStoryScreen();
+        else if (currentState === "game") renderGameScreen();
+    }
+
+    function renderCharacterScreen() {
+        let html = `<div class="card">
+            <h1>📜 СССР: Путь к краху.</h1>
+            <div class="sub">от твоих действий зависит будущее страны</div>
+            <div class="character-list">`;
+        for (let key in CHARACTERS) {
+            const ch = CHARACTERS[key];
+            const isSelected = (selectedCharacterId === key);
+            html += `<div class="character-card ${isSelected ? 'selected' : ''}" data-id="${key}">
+                <div class="character-name">${ch.name}</div>
+                <div class="character-years">${ch.years}</div>
+                ${isSelected ? `<div class="bio" style="position: relative;"><button class="close-bio-btn" data-id="${key}">✖</button>📖 ${ch.shortBio}</div>` : ""}
+            </div>`;
+        }
+        html += `</div><button class="start-btn ${!selectedCharacterId ? 'disabled' : ''}" id="startGameBtn">▶ НАЧАТЬ ИГРУ</button><footer>нажми на персонажа, чтобы увидеть биографию</footer></div>`;
+        document.getElementById("app").innerHTML = html;
+        attachCharacterEvents();
+        document.getElementById("startGameBtn")?.addEventListener("click", () => {
+            if (selectedCharacterId && CHARACTERS[selectedCharacterId]) {
+                gameData.characterBio = CHARACTERS[selectedCharacterId].bioDetails;
+                currentState = "story_screen";
+                render();
+            }
+        });
+    }
+
+    function renderStoryScreen() {
+        const ch = CHARACTERS[selectedCharacterId];
+        const bio = gameData.characterBio;
+        document.getElementById("app").innerHTML = `<div class="card">
+            <h1>📖 ${ch.name}</h1>
+            <div class="sub">путь в политику</div>
+            <div class="story-image"><img src="yakovlev.jpg" style="width: 100%; max-width: 200px; border-radius: 28px; display: block; margin: 0 auto;" alt="Александр Яковлев"></div>
+            <div class="story-section"><div class="story-label">🏠 МЕСТО РОЖДЕНИЯ</div><div class="story-text">${bio.born}</div></div>
+            <div class="story-section"><div class="story-label">🇺🇸 СТАЖИРОВКА В США (1958–1959)</div><div class="story-text">Яковлев отправился в Колумбийский университет в Нью-Йорке.<br><br>Он увидел западную жизнь своими глазами.<br><br><strong>«Если СССР не изменится, мы проиграем холодную войну»</strong></div></div>
+            <div class="story-section"><div class="story-label">🔄 ВОЗВРАЩЕНИЕ В МОСКВУ (1985)</div><div class="story-text">Горбачёв возвращает его из «почётной ссылки» и назначает секретарём ЦК по идеологии.</div></div>
+            <div class="story-section"><div class="story-label">⚡ ПЕРВЫЙ ШАГ К ПЕРЕСТРОЙКЕ</div><div class="story-text">Его первое решение — запустить «гласность»: свободу слова, публикацию правды о репрессиях.<br><br><strong>С этого момента твой выбор изменит историю.</strong></div></div>
+            <div class="story-section" style="background: rgba(255, 215, 0, 0.1); border: 1px solid #ffd96640;">
+                <div class="story-label" style="color: #d7c9b5; text-align: center;">📊 СТАРТОВЫЕ ХАРАКТЕРИСТИКИ (1985 год)</div>
+                <div class="story-text" style="font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between;"><span>🎯 Влияние на Горбачёва:</span><span style="color: #d7c9b5;">85</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>🗳️ Доверие демократов:</span><span style="color: #d7c9b5;">50</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>⚙️ Доверие консерваторов:</span><span style="color: #d7c9b5;">20</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>🛡️ Политическая безопасность:</span><span style="color: #d7c9b5;">70</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>⚖️ Совесть:</span><span style="color: #d7c9b5;">90</span></div>
+                    <div style="display: flex; justify-content: space-between;"><span>📦 Доступ к партийным ресурсам:</span><span style="color: #d7c9b5;">70</span></div>
+                </div>
+                <div class="story-text" style="font-size: 11px; text-align: center;">⚡ Твои решения будут менять эти показатели</div>
+            </div>
+            <button class="start-btn" id="continueToGameBtn">▶ ПРИСТУПИТЬ К МИССИЯМ</button>
+            <button class="restart-btn-small" id="backToMenuBtn">← Назад к выбору</button>
+        </div>`;
+        document.getElementById("continueToGameBtn")?.addEventListener("click", () => { initGame(selectedCharacterId); currentState = "game"; render(); });
+        document.getElementById("backToMenuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; render(); });
+    }
+
+    function renderGameScreen() {
+        if (!gameActive) return;
+        const idx = gameData.currentMission - 1;
+        if (idx >= 0 && idx < gameData.missionsList.length) {
+            const mission = gameData.missionsList[idx];
+            let options = [];
+            if (mission.correct) options.push({ text: mission.correct, isCorrect: true, idx: null });
+            if (mission.wrong) options.push({ text: mission.wrong, isCorrect: false, idx: 1 });
+            if (mission.wrong2) options.push({ text: mission.wrong2, isCorrect: false, idx: 2 });
+            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
+            let buttonsHtml = '';
+            options.forEach((opt, i) => { buttonsHtml += `<button class="action-btn" id="btn_${i}">${opt.text}</button>`; });
+            document.getElementById("app").innerHTML = `<div class="card"><div class="mission-title">🏭 МИССИЯ ${gameData.currentMission} / ${gameData.missionsList.length}</div><div class="mission-text">${mission.text}</div><div class="button-group">${buttonsHtml}</div><footer>⚡ история зависит от твоего выбора</footer></div>`;
+            options.forEach((opt, i) => {
+                document.getElementById(`btn_${i}`)?.addEventListener("click", () => {
+                    if (opt.isCorrect) gameChoice(true);
+                    else gameChoice(false, opt.idx);
+                });
+            });
+        } else { showFinalMessage(gameData.victoryMessage, true); }
+    }
+
+    function initGame(characterId) {
+        const ch = CHARACTERS[characterId];
+        if (!ch) return;
+        gameData.missionsList = [...ch.missions];
+        gameData.victoryMessage = ch.victoryText;
+        gameData.currentMission = 1;
+        gameActive = true;
+        playerStats = { gorbachevInfluence: 85, democratsTrust: 50, conservativesTrust: 20, politicalSurvival: 70, conscience: 90, partyResources: 70, humanRightsRespect: 0 };
+    }
+
+    function gameChoice(isCorrect, wrongIndex = 1) {
+        if (!gameActive) return;
+        const idx = gameData.currentMission - 1;
+        const mission = gameData.missionsList[idx];
+        if (!isCorrect) {
+            let msg = mission.failMessage;
+            if (wrongIndex === 1 && mission.failMessage1) msg = mission.failMessage1;
+            if (wrongIndex === 2 && mission.failMessage2) msg = mission.failMessage2;
+            showFinalMessage(msg, false);
+            return;
+        }
+        if (mission.statsChange) {
+            for (let key in mission.statsChange) { if (playerStats[key] !== undefined) playerStats[key] += mission.statsChange[key]; }
+        }
+        const next = mission.correctNext;
+        const successMsg = mission.successMessage || "✅ Правильно! Продолжай!";
+        showSuccessScreen(next, successMsg);
+    }
+
+    function showSuccessScreen(nextMission, successMessage) {
+        gameActive = false;
+        if (nextMission === null || nextMission > gameData.missionsList.length) { showFinalStats(); return; }
+        document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text victory" style="font-size:18px;">${successMessage}</div>
+            <div style="margin-top:15px; padding-top:10px; border-top:1px solid #ffd96640;">
+                <div class="story-label">📊 ТЕКУЩИЕ ХАРАКТЕРИСТИКИ:</div>
+                <div style="font-size:12px; display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                    <span style="color:#ffd966;">🎯 Влияние на Горбачёва:</span><span style="color:#d7c9b5;">${playerStats.gorbachevInfluence}</span>
+                    <span style="color:#ffd966;">🗳️ Доверие демократов:</span><span style="color:#d7c9b5;">${playerStats.democratsTrust}</span>
+                    <span style="color:#ffd966;">⚙️ Доверие консерваторов:</span><span style="color:#d7c9b5;">${playerStats.conservativesTrust}</span>
+                    <span style="color:#ffd966;">🛡️ Политическа безопасность:</span><span style="color:#d7c9b5;">${playerStats.politicalSurvival}</span>
+                    <span style="color:#ffd966;">⚖️ Совесть:</span><span style="color:#d7c9b5;">${playerStats.conscience}</span>
+                    <span style="color:#ffd966;">📦 Доступ к ресурсам:</span><span style="color:#d7c9b5;">${playerStats.partyResources}</span>
+                </div>
+            </div>
+            <div class="button-group"><button class="action-btn start-btn" id="continueBtn">▶ ПРОДОЛЖИТЬ ПРИНИМАТЬ РЕШЕНИЯ</button></div>
+        </div>`;
+        document.getElementById("continueBtn")?.addEventListener("click", () => { gameData.currentMission = nextMission; gameActive = true; render(); });
+    }
+
+    function showFinalStats() {
+        gameActive = false;
+        let status = "";
+        if (playerStats.conscience >= 80) status = "🏆 ГЕРОЙ ПЕРЕСТРОЙКИ";
+        else if (playerStats.conscience >= 60) status = "⭐ РЕФОРМАТОР";
+        else if (playerStats.conscience >= 40) status = "🟡 КОМПРОМИССНЫЙ ПОЛИТИК";
+        else status = "💀 ПРЕДАТЕЛЬ ИДЕАЛОВ";
+        document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text victory" style="font-size:20px; text-align:center;">🎉 ИГРА ПРОЙДЕНА 🎉</div>
+            <div style="font-size:14px; line-height:1.8; color: #d7c9b5;">
+    🎯 Влияние на Горбачёва: <span style="color: #d7c9b5;">${playerStats.gorbachevInfluence}</span><br>
+    🗳️ Доверие демократов: <span style="color: #d7c9b5;">${playerStats.democratsTrust}</span><br>
+    ⚙️ Доверие консерваторов: <span style="color: #d7c9b5;">${playerStats.conservativesTrust}</span><br>
+    🛡️ Политическа безопасность: <span style="color: #d7c9b5;">${playerStats.politicalSurvival}</span><br>
+    ⚖️ Совесть: <span style="color: #d7c9b5;">${playerStats.conscience}</span><br>
+    📦 Доступ к ресурсам: <span style="color: #d7c9b5;">${playerStats.partyResources}</span><br>
+    🕊️ Уважение правозащитников: <span style="color: #d7c9b5;">${playerStats.humanRightsRespect || 0}</span>
+</div></div>
+            <div class="story-section"><div class="story-text" style="font-style:italic;">${gameData.victoryMessage}</div></div>
+            <div class="button-group"><button class="action-btn restart-btn-small" id="restartBtn">🔄 СЫГРАТЬ ЗАНОВО</button><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div>
+        </div>`;
+        document.getElementById("restartBtn")?.addEventListener("click", () => { location.reload(); });
+        document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
+    }
+
+    function showFinalMessage(message, isVictory) {
+        gameActive = false;
+        const extraClass = isVictory ? "victory" : "game-over";
+        if (isVictory) {
+            document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text ${extraClass}">${message}</div><div class="button-group"><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div></div>`;
+            document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
+        } else {
+            document.getElementById("app").innerHTML = `<div class="card"><div class="mission-text ${extraClass}">${message}</div><div class="button-group"><button class="action-btn restart-btn-small" id="retryBtn">🔁 НАЗАД К ВОПРОСУ</button><button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button></div></div>`;
+            document.getElementById("retryBtn")?.addEventListener("click", () => { gameActive = true; render(); });
+            document.getElementById("menuBtn")?.addEventListener("click", () => { currentState = "character_select"; selectedCharacterId = null; gameActive = true; render(); });
+        }
+    }
+
+    function attachCharacterEvents() {
+        document.querySelectorAll(".character-card").forEach(card => {
+            card.addEventListener("click", (e) => {
+                if (!e.target.classList.contains("close-bio-btn")) {
+                    const id = card.getAttribute("data-id");
+                    if (id && CHARACTERS[id]) { selectedCharacterId = id; render(); }
+                }
+            });
+        });
+        document.querySelectorAll(".close-bio-btn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute("data-id");
+                if (id && selectedCharacterId === id) { selectedCharacterId = null; render(); }
+            });
+        });
+    }
+
+    render();
+</script>
+</body>
+</html>
