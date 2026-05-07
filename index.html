@@ -523,17 +523,17 @@
                 <div class="story-label" style="font-size: 12px;">📊 ИЗМЕНЕНИЯ ХАРАКТЕРИСТИК:</div>
                 <div style="font-size: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
                     <div style="color: #d7c9b5;">Влияние на Горбачёва:</div>
-                    <div style="color: #d7c9b5;">${playerStats.gorbachevInfluence} ${formatChange(changes.gorbachevInfluence)}</div>
+                    <div>${playerStats.gorbachevInfluence} ${formatChange(changes.gorbachevInfluence)}</div>
                     <div style="color: #d7c9b5;">Доверие демократов:</div>
-                    <div style="color: #d7c9b5;">${playerStats.democratsTrust} ${formatChange(changes.democratsTrust)}</div>
+                    <div>${playerStats.democratsTrust} ${formatChange(changes.democratsTrust)}</div>
                     <div style="color: #d7c9b5;">Доверие консерваторов:</div>
-                    <div style="color: #d7c9b5;">${playerStats.conservativesTrust} ${formatChange(changes.conservativesTrust)}</div>
+                    <div>${playerStats.conservativesTrust} ${formatChange(changes.conservativesTrust)}</div>
                     <div style="color: #d7c9b5;">Политическая безопасность:</div>
-                    <div style="color: #d7c9b5;">${playerStats.politicalSurvival} ${formatChange(changes.politicalSurvival)}</div>
+                    <div>${playerStats.politicalSurvival} ${formatChange(changes.politicalSurvival)}</div>
                     <div style="color: #d7c9b5;">Совесть:</div>
-                    <div style="color: #d7c9b5;">${playerStats.conscience} ${formatChange(changes.conscience)}</div>
+                    <div>${playerStats.conscience} ${formatChange(changes.conscience)}</div>
                     <div style="color: #d7c9b5;">Доступ к ресурсам:</div>
-                    <div style="color: #d7c9b5;">${playerStats.partyResources} ${formatChange(changes.partyResources)}</div>
+                    <div>${playerStats.partyResources} ${formatChange(changes.partyResources)}</div>
                 </div>
             </div>
             <div class="button-group">
@@ -574,11 +574,9 @@
                     🕊️ Уважение правозащитников: ${playerStats.humanRightsRespect || 0}
                 </div>
             </div>
-            
             <div class="story-section" style="background: #231717; border: 1px solid #ffd96640; border-radius: 20px; padding: 16px; margin-bottom: 20px;">
-                <div class="story-text" style="font-style:italic; color: #d7c9b5;">${gameData.victoryMessage}</div>
-            </div>
-            
+    <div class="story-text" style="font-style:italic; color: #d7c9b5;">${gameData.victoryMessage}</div>
+</div>
             <div class="button-group">
                 <button class="action-btn restart-btn-small" id="restartBtn">🔄 СЫГРАТЬ ЗАНОВО</button>
                 <button class="action-btn restart-btn-small" id="menuBtn">🏠 В ГЛАВНОЕ МЕНЮ</button>
